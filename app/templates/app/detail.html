@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ car.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <a href="{% url 'index' %}" class="btn btn-secondary mb-3">← Назад</a>
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ car.image.url }}" class="img-fluid rounded-start" alt="{{ car.title }}">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title">{{ car.title }}</h3>
+                    <p class="card-text"><strong>Модель:</strong> {{ car.model }}</p>
+                    <p class="card-text"><strong>Год выпуска:</strong> {{ car.year }}</p>
+                    <p class="card-text"><strong>Категория:</strong> {{ car.category.title }}</p>
+                    <p class="card-text"><strong>Цена:</strong> {{ car.price }} ₽</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
