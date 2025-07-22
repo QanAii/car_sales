@@ -63,3 +63,4 @@ def delete_view(request, car_id):
     car = Car.objects.get(id=car_id)
     car.delete()
     return redirect('index')
+
