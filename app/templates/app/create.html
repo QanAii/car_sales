@@ -74,6 +74,10 @@
             color: #0d6efd;
             text-decoration: underline;
         }
+        .text-danger {
+            margin-top: 5px;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -85,31 +89,47 @@
         {% csrf_token %}
 
         <label for="title">Название машины:</label>
-        <input type="text" class="form-control" id="title" name="title" required placeholder="Введите название" />
+        <input type="text" class="form-control" id="title" name="title" required placeholder="Введите название" value="{{ form.title.value|default_if_none:'' }}" />
+        {% if form.title.errors %}
+            <div class="text-danger">{{ form.title.errors.0 }}</div>
+        {% endif %}
 
         <label for="model">Модель:</label>
-        <input type="text" class="form-control" id="model" name="model" required placeholder="Введите модель" />
+        <input type="text" class="form-control" id="model" name="model" required placeholder="Введите модель" value="{{ form.model.value|default_if_none:'' }}" />
+        {% if form.model.errors %}
+            <div class="text-danger">{{ form.model.errors.0 }}</div>
+        {% endif %}
 
         <label for="category">Категория:</label>
         <select class="form-select" id="category" name="category" required>
-            <option value="" disabled selected>Выберите категорию</option>
-            <option value="1">Легковой автомобиль</option>
-            <option value="2">Внедорожник</option>
-            <option value="3">Кабриолет</option>
-            <option value="4">Хэтчбек</option>
-            <option value="5">Пикап</option>
+            <option value="" disabled {% if not form.category.value %}selected{% endif %}>Выберите категорию</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if form.category.value|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.title }}</option>
+            {% endfor %}
         </select>
+        {% if form.category.errors %}
+            <div class="text-danger">{{ form.category.errors.0 }}</div>
+        {% endif %}
 
         <label for="year">Год выпуска:</label>
-        <input type="number" class="form-control" id="year" name="year" required min="1886" max="2050" placeholder="Введите год выпуска" />
+        <input type="number" class="form-control" id="year" name="year" required min="1886" max="2050" placeholder="Введите год выпуска" value="{{ form.year.value|default_if_none:'' }}" />
+        {% if form.year.errors %}
+            <div class="text-danger">{{ form.year.errors.0 }}</div>
+        {% endif %}
 
         <label for="price">Цена:</label>
-        <input type="number" step="0.01" class="form-control" id="price" name="price" required min="0" placeholder="Введите цену" />
+        <input type="number" step="0.01" class="form-control" id="price" name="price" required min="0" placeholder="Введите цену" value="{{ form.price.value|default_if_none:'' }}" />
+        {% if form.price.errors %}
+            <div class="text-danger">{{ form.price.errors.0 }}</div>
+        {% endif %}
 
         <label for="image">Фото:</label>
         <input type="file" class="form-control" id="image" name="image" accept="image/*" required />
+        {% if form.image.errors %}
+            <div class="text-danger">{{ form.image.errors.0 }}</div>
+        {% endif %}
 
-        <button type="submit" class="btn btn-primary">Создать ✅</button>
+        <button type="submit" class="btn btn-primary" aria-label="Создать новую машину">Создать ✅</button>
     </form>
 </div>
 

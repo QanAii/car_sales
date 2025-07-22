@@ -5,53 +5,91 @@
   <meta charset="UTF-8" />
   <title>Список машин</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      background: linear-gradient(135deg, #d7dde8 0%, #c0cfe4 100%);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #eef2f7 0%, #d6e0f0 100%);
+      font-family: 'Montserrat', sans-serif;
       padding: 40px 20px;
+      color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      flex-grow: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #2980b9;
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: #2980b9;
+      margin: 0;
+    }
+
+    nav a {
+      margin-left: 20px;
+      font-weight: 600;
+      color: #2980b9;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #1b4f72;
+      text-decoration: underline;
     }
 
     .create-link {
       display: inline-block;
-      background: linear-gradient(to right, #2e7d32, #388e3c);
+      background: #27ae60;
       color: white;
-      padding: 14px 24px;
-      font-weight: 600;
-      border-radius: 10px;
+      padding: 14px 26px;
+      font-weight: 700;
+      border-radius: 12px;
       font-size: 17px;
       margin-bottom: 30px;
       text-decoration: none;
-      transition: 0.3s ease;
+      box-shadow: 0 6px 12px rgba(39, 174, 96, 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .create-link:hover {
-      background: linear-gradient(to right, #388e3c, #2e7d32);
+      background-color: #219150;
+      box-shadow: 0 8px 20px rgba(33, 145, 80, 0.6);
       text-decoration: none;
     }
 
     .car-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 25px;
+      gap: 30px;
     }
 
     .car-card {
-      background: #ffffff;
-      border-radius: 16px;
+      background: #fff;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
 
     .car-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
 
     .car-img {
@@ -59,17 +97,25 @@
       height: 220px;
       object-fit: cover;
       display: block;
+      border-bottom: 3px solid #2980b9;
+      transition: transform 0.4s ease;
+    }
+
+    .car-card:hover .car-img {
+      transform: scale(1.05);
     }
 
     .car-info {
-      padding: 20px 18px;
+      padding: 22px 20px;
     }
 
     .car-title a {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
-      color: #0d6efd;
+      color: #2980b9;
       text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
     }
 
     .car-title a:hover {
@@ -79,35 +125,100 @@
     .car-details p {
       margin: 6px 0;
       color: #555;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .text-muted {
       font-size: 18px;
-      color: #444 !important;
+      color: #666 !important;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 20px 0;
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      border-top: 1px solid #ccc;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .create-link {
+        padding: 12px 20px;
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <a href="{% url 'create' %}" class="create-link">➕ Добавить машину</a>
+
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <script>
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        let bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+        bsAlert.close();
+      });
+    }, 5000);
+  </script>
+
+  <header class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="mb-0">Автомобили</h1>
+    </div>
+    <nav>
+      {% if user.is_authenticated %}
+        <span class="me-2">👤 <strong>{{ user.username }}</strong></span>
+        <a href="{% url 'create' %}" class="btn btn-success btn-sm me-2">➕ Добавить</a>
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Выйти</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm me-2">Войти</a>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Регистрация</a>
+      {% endif %}
+    </nav>
+  </header>
 
   {% if cars %}
     <div class="car-grid">
       {% for car in cars %}
-        <div class="car-card">
+        <div class="car-card" onclick="location.href='{% url 'detail' car.id %}'" tabindex="0" role="link" aria-label="Просмотр {{ car.title }}">
           {% if car.image %}
             <img src="{{ car.image.url }}" alt="{{ car.title }}" class="car-img" />
+          {% else %}
+            <img src="{% static 'default_car.jpg' %}" alt="Нет изображения" class="car-img" />
           {% endif %}
           <div class="car-info">
-            <div class="car-title mb-2">
+            <div class="car-title">
               <a href="{% url 'detail' car.id %}">{{ car.title }} — {{ car.model }}</a>
             </div>
             <div class="car-details">
               <p><strong>Категория:</strong> {{ car.category.title }}</p>
               <p><strong>Год выпуска:</strong> {{ car.year }}</p>
               <p><strong>Цена:</strong> <span class="text-success">${{ car.price }}</span></p>
+              <p><strong>Продавец:</strong> 👤 {{ car.user.username }}</p>
             </div>
           </div>
         </div>
@@ -116,7 +227,13 @@
   {% else %}
     <p class="text-muted">🚗 Машин пока нет... Добавьте первую!</p>
   {% endif %}
+
 </div>
 
+<footer>
+  &copy; 2025 Автомобильный магазин. Все права защищены.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

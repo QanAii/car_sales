@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Изменить машину</title>
+  <title>Редактировать машину — {{ car.title }}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -98,11 +98,13 @@
       transition: background-color 0.3s ease, color 0.3s ease;
       text-align: center;
       display: inline-block;
+      margin-top: 10px;
     }
     .btn-outline-secondary:hover {
       background-color: #0d6efd;
       color: white;
       border-color: #0d6efd;
+      text-decoration: none;
     }
     .mb-3.row > div {
       padding-left: 0;
@@ -115,7 +117,23 @@
 </head>
 <body>
 
-  <form method="post" enctype="multipart/form-data" class="edit-form shadow-sm rounded">
+{% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div
+          class="alert
+            {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}
+            alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+  <form method="post" enctype="multipart/form-data" class="edit-form shadow-sm rounded" novalidate>
     {% csrf_token %}
     <div class="card-header">Редактировать: {{ car.title }}</div>
 
@@ -129,6 +147,7 @@
         value="{{ car.title }}"
         required
         placeholder="Введите название машины"
+        aria-required="true"
       />
     </div>
 
@@ -142,12 +161,13 @@
         value="{{ car.model }}"
         required
         placeholder="Введите модель"
+        aria-required="true"
       />
     </div>
 
     <div class="mb-3">
       <label for="category"><i class="fa-solid fa-list me-2"></i>Категория</label>
-      <select id="category" name="category" class="form-select" required>
+      <select id="category" name="category" class="form-select" required aria-required="true">
         {% for cat in categories %}
           <option value="{{ cat.id }}" {% if car.category.id == cat.id %}selected{% endif %}>
             {{ cat.title }}
@@ -169,6 +189,7 @@
           min="1886"
           max="2050"
           placeholder="Год выпуска"
+          aria-required="true"
         />
       </div>
       <div class="col-md-6">
@@ -183,6 +204,7 @@
           required
           min="0"
           placeholder="Цена"
+          aria-required="true"
         />
       </div>
     </div>
@@ -195,13 +217,15 @@
         name="image"
         class="form-control"
         accept="image/*"
+        aria-describedby="imageHelp"
       />
+      <small id="imageHelp" class="form-text text-muted">Поддерживаются форматы: JPG, PNG, GIF и др.</small>
     </div>
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary" aria-label="Сохранить изменения">
       <i class="fa-solid fa-floppy-disk me-2"></i>Сохранить
     </button>
-    <a href="{% url 'detail' car.id %}" class="btn btn-outline-secondary">
+    <a href="{% url 'detail' car.id %}" class="btn btn-outline-secondary" role="button" aria-label="Отмена редактирования">
       <i class="fa-solid fa-ban me-2"></i>Отмена
     </a>
   </form>
